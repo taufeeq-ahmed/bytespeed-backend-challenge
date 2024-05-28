@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client'
-import { getAllConnectedContacts } from './connected-contacts'
 
 const prisma = new PrismaClient()
 
