@@ -1,4 +1,5 @@
-import { getEmailConnectedContacts, getPhoneConnectedContacts } from "./connected-contacts"
+import { getEmailConnectedContacts, getPhoneConnectedContacts } from "../repository/get-connected-contacts"
+
 
 const containsnewData = async (email: string, phoneNumber: string): Promise<boolean> => {
     const emailConnectedContacts = await getEmailConnectedContacts(email)

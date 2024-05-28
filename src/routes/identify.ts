@@ -1,8 +1,9 @@
 import express, { Request, Response } from "express";
 
 import containsnewData from "../helpers/contains-new-data";
-import addContact from "../helpers/add-contact";
+
 import consolidateContact from "../helpers/consolidate-contact";
+import addContact from "../repository/add-contact";
 
 const router = express.Router()
 

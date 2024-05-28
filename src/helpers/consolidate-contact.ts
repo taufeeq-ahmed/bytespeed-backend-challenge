@@ -1,24 +1,10 @@
 import { PrismaClient } from '@prisma/client'
+import { getAllConnectedContacts } from '../repository/get-connected-contacts'
 
 const prisma = new PrismaClient()
 
 const consolidateContact = async (email: string, phoneNumber: string) => {
-    const firstItem = await prisma.contact.findFirst({
-        where: {
-            OR: [
-                { email }, { phoneNumber }
-            ]
-        }
-    })
-
-    const allConnectedContacts = await prisma.contact.findMany({
-        where: {
-            OR: [
-                { email }, { phoneNumber }, { linkedId: firstItem!.linkedId || firstItem!.id },
-                { id: firstItem!.linkedId || firstItem!.id }
-            ]
-        }
-    })
+    const allConnectedContacts = await getAllConnectedContacts(email, phoneNumber)
 
     let primaryContactId: number = -1
     const emails: Set<string> = new Set()
@@ -53,4 +39,5 @@ const consolidateContact = async (email: string, phoneNumber: string) => {
         contact
     }
 }
+
 export default consolidateContact

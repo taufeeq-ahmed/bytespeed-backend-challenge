@@ -20,7 +20,7 @@ const getPhoneConnectedContacts = async (phoneNumber: string) => {
     return phoneConnectedContacts
 }
 
-const getAllConnectedContacts = async (email: string, phoneNumber: string) => {
+const getEmailOrPhoneConnectedContacts = async (email: string, phoneNumber: string) => {
     const allConnectedContacts = await prisma.contact.findMany({
         where: {
             OR: [
@@ -31,8 +31,30 @@ const getAllConnectedContacts = async (email: string, phoneNumber: string) => {
     return allConnectedContacts
 }
 
+const getAllConnectedContacts = async (email: string, phoneNumber: string) => {
+    const firstItem = await prisma.contact.findFirst({
+        where: {
+            OR: [
+                { email }, { phoneNumber }
+            ]
+        }
+    })
+
+    const allConnectedContacts = await prisma.contact.findMany({
+        where: {
+            OR: [
+                { email }, { phoneNumber }, { linkedId: firstItem!.linkedId || firstItem!.id },
+                { id: firstItem!.linkedId || firstItem!.id }
+            ]
+        }
+    })
+
+    return allConnectedContacts
+}
+
 export {
-    getAllConnectedContacts,
+    getEmailOrPhoneConnectedContacts,
     getEmailConnectedContacts,
-    getPhoneConnectedContacts
+    getPhoneConnectedContacts,
+    getAllConnectedContacts
 }

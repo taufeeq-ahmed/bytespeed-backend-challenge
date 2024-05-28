@@ -1,10 +1,11 @@
 import { PrismaClient } from '@prisma/client'
-import { getAllConnectedContacts } from './connected-contacts'
+import { getEmailOrPhoneConnectedContacts } from './get-connected-contacts'
+
 
 const prisma = new PrismaClient()
 
 const addContact = async (email: string, phoneNumber: string) => {
-    const allConnectedContacts = await getAllConnectedContacts(email, phoneNumber)
+    const allConnectedContacts = await getEmailOrPhoneConnectedContacts(email, phoneNumber)
 
     const linkPrecedence = allConnectedContacts.length === 0 ? "primary" : "secondary"
     const linkedId = linkPrecedence === "primary" ? null : allConnectedContacts[0].linkedId || allConnectedContacts[0].id
@@ -18,4 +19,5 @@ const addContact = async (email: string, phoneNumber: string) => {
         },
     })
 }
+
 export default addContact
