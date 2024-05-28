@@ -53,7 +53,7 @@ const addContact = async (email: string, phoneNumber: string) => {
     const linkPrecedence = allConnectedContacts.length === 0 ? "primary" : "secondary"
     const linkedId = linkPrecedence === "primary" ? null : allConnectedContacts[0].id
 
-    const contact = await prisma.contact.create({
+    await prisma.contact.create({
         data: {
             email,
             phoneNumber,
