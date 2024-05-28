@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { getAllConnectedContacts, getEmailConnectedContacts, getPhoneConnectedContacts } from "../helpers/connections";
+import { getAllConnectedContacts, getEmailConnectedContacts, getPhoneConnectedContacts } from "../helpers/connected-contacts";
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
