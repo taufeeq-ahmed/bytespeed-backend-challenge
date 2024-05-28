@@ -18,29 +18,33 @@ const consolidateContacts = async (email: string, phoneNumber: string) => {
     const allConnectedContacts = await getAllConnectedContacts(email, phoneNumber)
 
     let primaryContactId: number = -1
-    const emails: string[] = []
-    const phoneNumbers: string[] = []
-    const secondaryContactIds: number[] = []
+    const emails: Set<string> = new Set()
+    const phoneNumbers: Set<string> = new Set()
+    const secondaryContactIds: Set<number> = new Set()
 
     allConnectedContacts.forEach((contact) => {
-        const { email, phoneNumber, linkPrecedence, id } = contact
+        const { email, phoneNumber, linkPrecedence, id, linkedId } = contact
 
-        if (linkPrecedence === "primary") {
-            primaryContactId = id
+        if (linkedId) {
+            primaryContactId = linkedId
         } else {
-            secondaryContactIds.push(id)
+            primaryContactId = id
         }
 
-        if (email) emails.push(email)
-        if (phoneNumber) phoneNumbers.push(phoneNumber)
+        if (linkPrecedence !== "primary") {
+            secondaryContactIds.add(id)
+        }
+
+        if (email) emails.add(email)
+        if (phoneNumber) phoneNumbers.add(phoneNumber)
 
     })
 
     const contact = {
         primaryContactId,
-        emails,
-        phoneNumbers,
-        secondaryContactIds
+        emails: Array.from(emails),
+        phoneNumbers: Array.from(phoneNumbers),
+        secondaryContactIds: Array.from(secondaryContactIds)
     }
     return {
         contact
@@ -51,7 +55,7 @@ const addContact = async (email: string, phoneNumber: string) => {
     const allConnectedContacts = await getAllConnectedContacts(email, phoneNumber)
 
     const linkPrecedence = allConnectedContacts.length === 0 ? "primary" : "secondary"
-    const linkedId = linkPrecedence === "primary" ? null : allConnectedContacts[0].id
+    const linkedId = linkPrecedence === "primary" ? null : allConnectedContacts[0].linkedId || allConnectedContacts[0].id
 
     await prisma.contact.create({
         data: {

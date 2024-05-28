@@ -24,7 +24,7 @@ const getAllConnectedContacts = async (email: string, phoneNumber: string) => {
     const allConnectedContacts = await prisma.contact.findMany({
         where: {
             OR: [
-                { email }, { phoneNumber }
+                { email }, { phoneNumber },
             ]
         }
     })
