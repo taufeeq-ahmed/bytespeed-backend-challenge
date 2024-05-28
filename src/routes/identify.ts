@@ -4,7 +4,6 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-
 const router = express.Router()
 
 const containsnewData = async (email: string, phoneNumber: string): Promise<boolean> => {
@@ -15,7 +14,22 @@ const containsnewData = async (email: string, phoneNumber: string): Promise<bool
 }
 
 const consolidateContacts = async (email: string, phoneNumber: string) => {
-    const allConnectedContacts = await getAllConnectedContacts(email, phoneNumber)
+    const firstItem = await prisma.contact.findFirst({
+        where: {
+            OR: [
+                { email }, { phoneNumber }
+            ]
+        }
+    })
+
+    const allConnectedContacts = await prisma.contact.findMany({
+        where: {
+            OR: [
+                { email }, { phoneNumber }, { linkedId: firstItem!.linkedId || firstItem!.id },
+                { id: firstItem!.linkedId || firstItem!.id }
+            ]
+        }
+    })
 
     let primaryContactId: number = -1
     const emails: Set<string> = new Set()

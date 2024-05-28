@@ -14,9 +14,11 @@ datasource db {
 }
 
 model Contact {
-  id             Int     @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   email          String?
   phoneNumber    String?
   linkedId       Int?
   linkPrecedence String
+  createdAt      DateTime? @default(now())
+  updatedAt      DateTime? @updatedAt
 }
